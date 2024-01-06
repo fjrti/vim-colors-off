@@ -15,10 +15,11 @@ if exists('syntax on')
     syntax reset
 endif
 
-let g:colors_name='off'
-let colors_off_a_little = get(g:, 'colors_off_a_little', 0)
+syntax off
 
-let s:black           = { "gui": "#212121", "cterm": "0"   }
+let g:colors_name='off'
+
+let s:black           = { "gui": "#000000", "cterm": "0"   }
 let s:medium_gray     = { "gui": "#767676", "cterm": "243" }
 let s:white           = { "gui": "#F1F1F1", "cterm": "15"  }
 let s:actual_white    = { "gui": "#FFFFFF", "cterm": "231" }
@@ -47,11 +48,11 @@ let s:dark_yellow     = { "gui": "#A89C14", "cterm": "3"   }
 
 if &background == "dark"
   let s:bg              = s:black
-  let s:bg_subtle       = s:light_black
-  let s:bg_subtle_comment = s:subtle_gray
-  let s:bg_very_subtle  = s:subtle_black
-  let s:norm            = s:lighter_gray
-  let s:norm_subtle     = s:light_gray
+  let s:bg_subtle       = s:black
+  let s:bg_subtle_comment = s:black
+  let s:bg_very_subtle  = s:black
+  let s:norm            = s:actual_white
+  let s:norm_subtle     = s:actual_white
   let s:purple          = s:light_purple
   let s:cyan            = s:light_cyan
   let s:green           = s:light_green
@@ -71,7 +72,6 @@ else
   let s:visual          = s:light_blue
 endif
 
-" https://github.com/noahfrederick/vim-hemisu/
 function! s:h(group, style)
   execute "highlight" a:group
     \ "guifg="   (has_key(a:style, "fg")    ? a:style.fg.gui   : "NONE")
@@ -83,9 +83,11 @@ function! s:h(group, style)
     \ "cterm="   (has_key(a:style, "cterm") ? a:style.cterm    : "NONE")
 endfunction
 
+
+" TODO
 call s:h("Normal",        {"bg": s:bg, "fg": s:norm})
-call s:h("Cursor",        {"bg": s:blue, "fg": s:norm })
-call s:h("Comment",       {"fg": s:bg_subtle_comment, "gui": "italic"})
+call s:h("Cursor",        {"bg": s:bg, "fg": s:norm})
+call s:h("Comment",       {"fg": s:norm})
 
 "call s:h("Constant",      {"fg": s:cyan})
 hi! link Constant         Normal
@@ -131,12 +133,12 @@ hi! link Debug            Special
 
 call s:h("Underlined",    {"fg": s:norm, "gui": "underline", "cterm": "underline"})
 call s:h("Ignore",        {"fg": s:bg})
-call s:h("Error",         {"fg": s:actual_white, "bg": s:red, "cterm": "bold"})
-call s:h("Todo",          {"fg": s:actual_white, "bg": s:pink, "gui": "bold", "cterm": "bold"})
+call s:h("Error",         {"fg": s:actual_white, "bg": s:black, "cterm": "bold"})
+call s:h("Todo",          {"fg": s:black, "bg": s:actual_white, "gui": "bold", "cterm": "bold"})
 call s:h("SpecialKey",    {"fg": s:light_green})
 call s:h("NonText",       {"fg": s:medium_gray})
 call s:h("Directory",     {"fg": s:dark_blue})
-call s:h("ErrorMsg",      {"fg": s:pink})
+call s:h("ErrorMsg",      {"fg": s:actual_white})
 call s:h("IncSearch",     {"bg": s:yellow, "fg": s:light_black})
 call s:h("Search",        {"bg": s:bg_subtle, "fg": s:norm})
 call s:h("MoreMsg",       {"fg": s:medium_gray, "cterm": "bold", "gui": "bold"})
@@ -144,9 +146,9 @@ hi! link ModeMsg MoreMsg
 call s:h("LineNr",        {"fg": s:bg_subtle})
 call s:h("CursorLineNr",  {"fg": s:blue, "bg": s:bg_very_subtle})
 call s:h("Question",      {"fg": s:red})
-call s:h("StatusLine",    {"bg": s:bg_very_subtle})
-call s:h("StatusLineNC",  {"bg": s:bg_very_subtle, "fg": s:medium_gray})
-call s:h("VertSplit",     {"bg": s:bg_very_subtle, "fg": s:bg_very_subtle})
+call s:h("StatusLine",    {"bg": s:actual_white, "fg": s:black})
+call s:h("StatusLineNC",  {"bg": s:actual_white, "fg": s:black})
+call s:h("VertSplit",     {"bg": s:actual_white, "fg": s:bg_very_subtle})
 call s:h("Title",         {"fg": s:dark_blue})
 call s:h("Visual",        {"bg": s:visual})
 call s:h("VisualNOS",     {"bg": s:bg_subtle})
@@ -179,7 +181,7 @@ call s:h("PmenuThumb",    {"fg": s:norm, "bg": s:bg_subtle})
 call s:h("TabLine",       {"fg": s:norm, "bg": s:bg_very_subtle})
 call s:h("TabLineSel",    {"fg": s:blue, "bg": s:bg_subtle, "gui": "bold", "cterm": "bold"})
 call s:h("TabLineFill",   {"fg": s:norm, "bg": s:bg_very_subtle})
-call s:h("CursorColumn",  {"bg": s:bg_very_subtle})
+" call s:h("CursorColumn",  {"bg": s:bg_very_subtle})
 call s:h("CursorLine",    {"fg": s:norm, "bg": s:bg_very_subtle})
 call s:h("ColorColumn",   {"bg": s:bg_subtle})
 
@@ -200,25 +202,42 @@ hi link diffAdded         DiffAdd
 hi link SignifySignAdd              LineNr
 hi link SignifySignDelete           LineNr
 hi link SignifySignChange           LineNr
-if colors_off_a_little
-    hi! GitGutterAdd guifg=#10A778 ctermfg=2
-    hi! GitGutterChange guifg=#A89C14 ctermfg=3
-    hi! GitGutterDelete guifg=#C30771 ctermfg=1
-    hi! GitGutterChangeDelete guifg=#C30771 ctermfg=1
-else
-    hi link GitGutterAdd                LineNr
-    hi link GitGutterDelete             LineNr
-    hi link GitGutterChange             LineNr
-    hi link GitGutterChangeDelete       LineNr
-endif
+hi link GitGutterAdd                LineNr
+hi link GitGutterDelete             LineNr
+hi link GitGutterChange             LineNr
+hi link GitGutterChangeDelete       LineNr
 
 " Fuzzy Search, Telescope & CtrlP
-if colors_off_a_little
-    hi! CtrlPMatch                   ctermbg=235 ctermfg=250 guibg=NONE guifg=#5FD7A7 cterm=NONE gui=NONE
-    hi! TelescopeMatching            guifg=#5FD7A7 guibg=#303030 ctermbg=NONE
-    highlight TelescopeSelection     guifg=NONE gui=bold guibg=#303030
-else
-    hi! CtrlPMatch                   ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE cterm=NONE gui=bold
-    hi! TelescopeMatching            guifg=NONE guibg=NONE ctermbg=NONE
-    highlight TelescopeSelection     guifg=NONE gui=bold guibg=#303030
+hi! CtrlPMatch                   ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE cterm=NONE gui=bold
+hi! TelescopeMatching            guifg=NONE guibg=NONE ctermbg=NONE
+highlight TelescopeSelection     guifg=NONE gui=bold guibg=#303030
+
+set cursorline!
+
+if &background=='light' 
+    highlight DiffAdd        cterm=none  ctermbg=225  ctermfg=9      guibg=#FFFAFA guifg=#ff0000 gui=none
+    highlight DiffDelete     cterm=none  ctermbg=none ctermfg=none   guibg=bg       guifg=fg      gui=none
+    highlight DiffChange     cterm=none  ctermbg=225  ctermfg=none   guibg=#FFFAFA  guifg=#000000 gui=none
+    highlight DiffText       cterm=none  ctermbg=225  ctermfg=9      guibg=#FFFAFA  guifg=#ff0000 gui=none
+    let g:clap_theme = 'onehalflight'
+    " cursor shape
+    let &t_SI = "\<esc>[5 q" . "\<Esc>]12;black\x7"
+    let &t_SR = "\<esc>[5 q" . "\<Esc>]12;green\x7"
+    let &t_EI = "\<esc>[2 q" . "\<Esc>]12;green\x7"
 endif
+
+if &background=='dark' 
+    highlight DiffAdd        cterm=none  ctermbg=237  ctermfg=9      guibg=#3a3a3a  guifg=#ff0000 gui=none
+    highlight DiffDelete     cterm=none  ctermbg=none ctermfg=none   guibg=bg       guifg=fg      gui=none
+    highlight DiffChange     cterm=none  ctermbg=237  ctermfg=none   guibg=#3a3a3a  guifg=#ffffff gui=none
+    highlight DiffText       cterm=none  ctermbg=237  ctermfg=9      guibg=#3a3a3a  guifg=#ff0000 gui=none
+    let g:clap_theme = 'onehalfdark'
+    let &t_SI = "\<esc>[5 q" . "\<Esc>]12;white\x7"
+    let &t_SR = "\<esc>[5 q" . "\<Esc>]12;green\x7"
+    let &t_EI = "\<esc>[2 q" . "\<Esc>]12;green\x7"
+endif
+
+highlight clear SignColumn
+highlight clear ErrorMsg
+
+
